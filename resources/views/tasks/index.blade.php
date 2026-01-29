@@ -7,7 +7,7 @@
     NO additional filtering - trusts controller for security
 --}}
 
-<x-kanban.board title="Project Dashboard">
+<x-kanban.board title="Project Dashboard" currentPage="board">
     
     {{-- Todo Column --}}
     <x-kanban.column 

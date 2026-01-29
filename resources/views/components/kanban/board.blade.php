@@ -8,14 +8,15 @@
 
 @props([
     'title' => 'Task Board',
-    'showHeader' => true
+    'showHeader' => true,
+    'currentPage' => null
 ])
 
 <div class="min-h-screen bg-gray-50">
     
     {{-- Navigation Header --}}
     @if($showHeader)
-        <x-kanban.navigation />
+        <x-kanban.navigation :currentPage="$currentPage" />
     @endif
     
     {{-- Board Content --}}

@@ -13,6 +13,16 @@
 
 @php
     $isActive = $active === true || $active === 'true';
+    
+    // Determine active color based on the href
+    $activeColor = 'text-red-600 border-b-2 border-red-600'; // default red
+    if (str_contains($href, 'statistics')) {
+        $activeColor = 'text-red-600 border-b-2 border-red-600'; // red for statistics
+    } elseif (str_contains($href, 'board')) {
+        $activeColor = 'text-blue-600 border-b-2 border-blue-600'; // blue for board
+    } elseif (str_contains($href, 'settings')) {
+        $activeColor = 'text-gray-600 border-b-2 border-gray-600'; // gray for settings
+    }
 
     $icons = [
         'board' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>',
@@ -26,7 +36,7 @@
 
 @endphp
 
-<a href="{{ $href }}" class="flex items-center text-sm font-semibold {{ $isActive ? 'text-red-600 border-b-2 border-red-600' : 'text-gray-700 hover:text-gray-900' }} uppercase tracking-wide pb-1 transition-colors">
+<a href="{{ $href }}" class="flex items-center text-sm font-semibold {{ $isActive ? $activeColor : 'text-gray-700 hover:text-gray-900' }} uppercase tracking-wide pb-1 transition-colors">
 
     {{-- Icon --}}
     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
