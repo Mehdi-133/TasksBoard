@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
             $table->string('title');
-            $table->text('description'); // longer text
-            $table->enum('priority', ['low', 'medium', 'high']);
-            $table->enum('status', ['todo', 'in_progress', 'done']);
-            $table->timestamp('deadline')->nullable();
-            $table->softDeletes();
+            $table->text('description')->nullable();
+            $table->enum('status', ['todo', 'in_progress', 'done'])->default('todo');
+            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            $table->integer('progress')->default(0);
+            $table->integer('completed')->default(0);
+            $table->integer('total')->default(1);
+            $table->date('deadline')->nullable();
+            $table->string('avatar')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-
     }
 
     /**

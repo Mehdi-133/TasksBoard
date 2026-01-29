@@ -10,9 +10,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="font-sans antialiased bg-gray-50 min-h-screen">
         <!-- Modern Background with gradient accent -->
@@ -20,7 +20,7 @@
             <!-- Red accent gradient -->
             <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-gray-100"></div>
 
-            <div class="relative w-full max-w-md">
+            <div class="relative w-full max-w-md mx-auto">
                 <!-- Modern Form Container -->
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-all duration-500">
                     <!-- Brand Header -->
