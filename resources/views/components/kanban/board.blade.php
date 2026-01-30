@@ -12,7 +12,12 @@
     'currentPage' => null
 ])
 
-<div class="min-h-screen bg-gray-50" x-data="{ createTaskModalOpen: {{ $errors->any() ? 'true' : 'false' }} }">
+<div class="min-h-screen bg-gray-50" x-data="{ 
+    createTaskModalOpen: {{ $errors->any() ? 'true' : 'false' }},
+    updateTaskModalOpen: false,
+    deleteTaskModalOpen: false,
+    selectedTask: null
+}">
 
     {{-- Navigation Header --}}
     @if($showHeader)
@@ -192,7 +197,7 @@
         </div>
     </div>
 
-    {{-- Task Details Modal --}}
-    <x-kanban.task-details-modal />
+    {{-- Task Modals --}}
+    <x-modals.modals />
 
 </div>
