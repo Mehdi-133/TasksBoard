@@ -35,7 +35,13 @@
 @endphp
 
 {{-- Task Card Container --}}
-<div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
+<div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+     data-task-card="true"
+     data-title="{{ $title }}"
+     data-description="{{ $task['description'] ?? '' }}"
+     data-status="{{ $task['status'] ?? 'todo' }}"
+     data-priority="{{ $priority }}"
+     data-due-date="{{ $task['dueDate'] ?? $dueDate ?? '' }}">
 
     {{-- Task Header --}}
     <div class="flex items-start justify-between mb-3">
@@ -82,18 +88,19 @@
             <div class="text-xs text-gray-400">No due date</div>
         @endif
 
+        {{-- Avatar --}}
+        @if($avatar)
+            <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                <span class="text-xs text-gray-600">{{ substr($avatar, 0, 1) }}</span>
+            </div>
+        @else
+            <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+        @endif
 
-
-    </div>
-
-    {{-- Tags --}}
-    <div class="mt-3 flex flex-wrap gap-1">
-        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 rounded-full">
-            Design
-        </span>
-        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-            Frontend
-        </span>
     </div>
 
 </div>

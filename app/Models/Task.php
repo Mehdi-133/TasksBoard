@@ -17,18 +17,21 @@ class Task extends Model
         'priority',
         'status',
         'deadline',
+        'due_date',
         'progress',
         'completed',
         'total',
-        'avatar',
     ];
 
     protected $casts = [
         'deadline' => 'datetime'
     ];
 
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+
 }

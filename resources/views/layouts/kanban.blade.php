@@ -35,6 +35,11 @@
             .kanban-scroll::-webkit-scrollbar-thumb:hover {
                 background: #94a3b8;
             }
+            
+            /* Alpine.js x-cloak to prevent flickering */
+            [x-cloak] {
+                display: none !important;
+            }
         </style>
     </head>
     <body class="font-sans antialiased">

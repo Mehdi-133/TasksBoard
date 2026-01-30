@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Cards Example</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+
+<!-- Example Task Cards with Data Attributes -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+    
+    <!-- Task Card 1 -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+         data-task-card="true"
+         data-title="Design new landing page"
+         data-description="Create a modern, responsive landing page design with hero section, features, and pricing tables."
+         data-status="todo"
+         data-priority="high"
+         data-due-date="2024-02-15">
+        
+        <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+                <div class="flex items-center mb-2">
+                    <div class="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
+                    <h4 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-red-600 transition-colors">
+                        Design new landing page
+                    </h4>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <div class="text-xs text-gray-500">Feb 15</div>
+            <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Card 2 -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+         data-task-card="true"
+         data-title="Setup development environment"
+         data-description="Configure local development environment with Docker, Node.js, and database setup."
+         data-status="in_progress"
+         data-priority="medium"
+         data-due-date="2024-02-10">
+        
+        <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+                <div class="flex items-center mb-2">
+                    <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                    <h4 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-red-600 transition-colors">
+                        Setup development environment
+                    </h4>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <div class="text-xs text-gray-500">Feb 10</div>
+            <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                <span class="text-xs text-gray-600">JD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Card 3 -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+         data-task-card="true"
+         data-title="Write documentation"
+         data-description="Create comprehensive API documentation with examples and use cases."
+         data-status="done"
+         data-priority="low"
+         data-due-date="2024-02-20">
+        
+        <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+                <div class="flex items-center mb-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <h4 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-red-600 transition-colors">
+                        Write documentation
+                    </h4>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <div class="text-xs text-gray-500">Feb 20</div>
+            <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Include the Modal Component -->
+<!-- In your actual Blade file, you would use: <x-kanban.task-details-modal /> -->
+<!-- For this demo, I'm including the modal HTML directly -->
+
+<!-- Task Details Modal -->
+<div id="taskModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <!-- Background Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300"></div>
+    
+    <!-- Modal Container -->
+    <div class="flex min-h-full items-center justify-center p-4">
+        <div class="relative w-full max-w-4xl transform rounded-2xl bg-white shadow-2xl max-h-[90vh] overflow-hidden transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            
+            <!-- Modal Header -->
+            <div class="border-b border-gray-200 px-6 py-4 bg-gray-50">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center space-x-3">
+                        <!-- Priority Indicator -->
+                        <div class="flex items-center">
+                            <div id="modalPriorityIndicator" class="w-3 h-3 rounded-full mr-2 bg-yellow-500"></div>
+                            <span id="modalPriorityText" class="text-sm font-medium text-gray-600 uppercase tracking-wide">medium</span>
+                        </div>
+                        
+                        <!-- Task Type Badge -->
+                        <div class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                            Task
+                        </div>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button onclick="closeTaskModal()" class="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-lg hover:bg-gray-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex flex-col lg:flex-row max-h-[calc(90vh-8rem)] overflow-hidden">
+                
+                <!-- Main Content Area -->
+                <div class="flex-1 p-6 overflow-y-auto">
+                    <!-- Task Title -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" id="modalTitle" class="w-full px-4 py-2 text-lg font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200" placeholder="Task title...">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="modalDescription" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200 resize-none" placeholder="Add task description..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-gray-200 bg-gray-50 p-6">
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Details</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <select id="modalStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200">
+                                <option value="todo">Todo</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
+
+                        <!-- Priority -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                            <select id="modalPriority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <!-- Due Date -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                            <input type="date" id="modalDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 space-y-3">
+                        <button onclick="updateTask()" class="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200">
+                            Update Task
+                        </button>
+                        
+                        <button onclick="deleteTask()" class="w-full px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-lg hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200">
+                            Delete Task
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Task Modal Functions
+function openTaskModal(taskData) {
+    const modal = document.getElementById('taskModal');
+    const modalContent = document.getElementById('modalContent');
+    
+    // Populate modal fields
+    document.getElementById('modalTitle').value = taskData.title || '';
+    document.getElementById('modalDescription').value = taskData.description || '';
+    document.getElementById('modalStatus').value = taskData.status || 'todo';
+    document.getElementById('modalPriority').value = taskData.priority || 'medium';
+    document.getElementById('modalDueDate').value = taskData.dueDate || '';
+    
+    // Update priority indicator
+    updatePriorityIndicator(taskData.priority || 'medium');
+    
+    // Show modal with animation
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+        document.body.style.overflow = 'hidden';
+    }, 10);
+}
+
+function closeTaskModal() {
+    const modal = document.getElementById('taskModal');
+    const modalContent = document.getElementById('modalContent');
+    
+    // Hide modal with animation
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }, 300);
+}
+
+function updatePriorityIndicator(priority) {
+    const indicator = document.getElementById('modalPriorityIndicator');
+    const text = document.getElementById('modalPriorityText');
+    
+    // Remove all priority classes
+    indicator.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-600');
+    
+    // Add appropriate class and text
+    switch(priority) {
+        case 'low':
+            indicator.classList.add('bg-green-500');
+            text.textContent = 'low';
+            break;
+        case 'medium':
+            indicator.classList.add('bg-yellow-500');
+            text.textContent = 'medium';
+            break;
+        case 'high':
+            indicator.classList.add('bg-red-600');
+            text.textContent = 'high';
+            break;
+        default:
+            indicator.classList.add('bg-yellow-500');
+            text.textContent = 'medium';
+    }
+}
+
+function updateTask() {
+    // UI only - collect data and log to console
+    const taskData = {
+        title: document.getElementById('modalTitle').value,
+        description: document.getElementById('modalDescription').value,
+        status: document.getElementById('modalStatus').value,
+        priority: document.getElementById('modalPriority').value,
+        dueDate: document.getElementById('modalDueDate').value
+    };
+    
+    console.log('Task updated:', taskData);
+    closeTaskModal();
+}
+
+function deleteTask() {
+    // UI only - log deletion
+    const taskData = {
+        title: document.getElementById('modalTitle').value,
+        description: document.getElementById('modalDescription').value,
+        status: document.getElementById('modalStatus').value,
+        priority: document.getElementById('modalPriority').value,
+        dueDate: document.getElementById('modalDueDate').value
+    };
+    
+    console.log('Task deleted:', taskData);
+    closeTaskModal();
+}
+
+// Initialize event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click listeners to all task cards
+    const taskCards = document.querySelectorAll('[data-task-card]');
+    
+    taskCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const taskData = {
+                title: this.dataset.title || '',
+                description: this.dataset.description || '',
+                status: this.dataset.status || 'todo',
+                priority: this.dataset.priority || 'medium',
+                dueDate: this.dataset.dueDate || ''
+            };
+            
+            openTaskModal(taskData);
+        });
+    });
+    
+    // Close modal when clicking overlay
+    const modal = document.getElementById('taskModal');
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal || e.target.classList.contains('bg-opacity-50')) {
+            closeTaskModal();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeTaskModal();
+        }
+    });
+    
+    // Update priority indicator when priority changes
+    document.getElementById('modalPriority').addEventListener('change', function() {
+        updatePriorityIndicator(this.value);
+    });
+});
+</script>
+
+</body>
+</html>

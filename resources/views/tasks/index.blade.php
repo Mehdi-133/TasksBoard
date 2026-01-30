@@ -16,11 +16,11 @@
         :tasks="$tasks['todo']->map(function($task) {
             return [
                 'title' => $task->title,
-                'progress' => $task->progress ?? 0,
-                'completed' => $task->completed ?? 0,
-                'total' => $task->total ?? 1,
+                'progress' => 0,
+                'completed' => 0,
+                'total' => 1,
                 'dueDate' => $task->deadline ? $task->deadline->format('Y-m-d') : null,
-                'avatar' => $task->avatar,
+                'avatar' => $task->user->name ?? null,
                 'priority' => $task->priority
             ];
         })->toArray()"
@@ -33,11 +33,11 @@
         :tasks="$tasks['in_progress']->map(function($task) {
             return [
                 'title' => $task->title,
-                'progress' => $task->progress ?? 50,
-                'completed' => $task->completed ?? 1,
-                'total' => $task->total ?? 2,
+                'progress' => 50,
+                'completed' => 0,
+                'total' => 1,
                 'dueDate' => $task->deadline ? $task->deadline->format('Y-m-d') : null,
-                'avatar' => $task->avatar,
+                'avatar' => $task->user->name ?? null,
                 'priority' => $task->priority
             ];
         })->toArray()"
@@ -51,10 +51,10 @@
             return [
                 'title' => $task->title,
                 'progress' => 100,
-                'completed' => $task->completed ?? 1,
-                'total' => $task->total ?? 1,
+                'completed' => 1,
+                'total' => 1,
                 'dueDate' => $task->deadline ? $task->deadline->format('Y-m-d') : null,
-                'avatar' => $task->avatar,
+                'avatar' => $task->user->name ?? null,
                 'priority' => $task->priority
             ];
         })->toArray()"

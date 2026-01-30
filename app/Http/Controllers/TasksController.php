@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class TasksController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $tasks = Task::all()->groupBy('status');
@@ -21,16 +21,37 @@ class TasksController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|min:3|max:255',
+            'description' => 'required|string|min:10|max:1000',
+            'status' => 'required|in:todo,in_progress,done',
+            'due_date' => 'required|date|after_or_equal:today',
+            'priority' => 'required|in:low,medium,high',
+        ]);
+
+        Task::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'status' => $validated['status'],
+            'deadline' => $validated['due_date'],
+            'priority' => $validated['priority'],
+            'user_id' => Auth::id(),
+            'progress' => $validated['status'] === 'done' ? 100 : 0,
+            'completed' => $validated['status'] === 'done',
+            'total' => 1,
+        ]);
+
+        return redirect()->route('board')->with('success', 'Task created successfully!');
     }
+
+
+
 
     /**
      * Display the specified resource.

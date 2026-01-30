@@ -6,10 +6,9 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\StatisticsController;
 
-
 Route::get('/', function () {
-    return view('tasks.index');
-})->name('tasks.index');
+    return auth()->check() ? redirect()->route('board') : redirect()->route('login');
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -21,9 +20,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/board', [BoardController::class, 'index'])->name('tasks.index');
+    Route::get('/board', [BoardController::class, 'index'])->name('board');
     Route::get('/tasks', [TasksController::class, 'index'])->name('tasks.index');
-
+    Route::post('/tasks', [TasksController::class, 'store'])->name('tasks.store');
 });
 
 require __DIR__.'/auth.php';
