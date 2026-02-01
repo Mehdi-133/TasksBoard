@@ -72,16 +72,45 @@ class TasksController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $tasks)
+    public function update(Request $request, Task $task)
     {
-        //
+        // Check if task exists and belongs to user
+        if (!$task || $task->user_id !== Auth::id()) {
+            return redirect()->route('board')->with('error', 'Task not found!');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|min:3|max:255',
+            'description' => 'required|string|min:10|max:1000',
+            'status' => 'required|in:todo,in_progress,done',
+            'due_date' => 'required|date',
+            'priority' => 'required|in:low,medium,high',
+        ]);
+
+        $task->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'status' => $validated['status'],
+            'deadline' => $validated['due_date'],
+            'priority' => $validated['priority'],
+            'progress' => $validated['status'] === 'done' ? 100 : 0,
+            'completed' => $validated['status'] === 'done',
+        ]);
+
+        return redirect()->route('board')->with('success', 'Task updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $tasks)
+    public function destroy(Task $task)
     {
-        //
+        // Check if task exists and belongs to user
+        if (!$task || $task->user_id !== Auth::id()) {
+            return redirect()->route('board')->with('error', 'Task not found!');
+        }
+
+        // Since model uses SoftDeletes, this will soft delete
+        $task->delete();
+        
+        return redirect()->route('board')->with('success', 'Task deleted successfully!');
     }
+
 }

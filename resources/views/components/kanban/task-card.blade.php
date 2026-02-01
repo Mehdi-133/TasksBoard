@@ -14,7 +14,7 @@
     | Extract task data (array + object safe)
     |--------------------------------------------------------------------------
     */
-    $taskId      = data_get($task, 'id');
+    $taskId      = data_get($task, 'id') ?? data_get($task, 'task_id') ?? $task->id ?? null;
     $title       = data_get($task, 'title', 'Untitled Task');
     $description = data_get($task, 'description', '');
     $status      = data_get($task, 'status', 'todo');

@@ -48,7 +48,7 @@
     $colors = $statusColors[$status] ?? $statusColors['blue'];
 @endphp
 
-<div class="{{ $colors['header'] }} rounded-t-xl border border-{{ $colors['border'] }} px-4 py-3">
+<div class="{{ $colors['header'] }} rounded-t-xl border {{ $colors['border'] }} px-4 py-3">
     <div class="flex items-center justify-between">
         
         {{-- Left Side - Title and Status --}}

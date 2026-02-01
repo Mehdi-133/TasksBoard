@@ -1,170 +1,3 @@
-{{--
-    Kanban Board Component
-    Main board container with navigation and columns
-    Usage: <x-kanban.board title="Project Dashboard">
-              <x-kanban.column title="Todo" status="blue" :tasks="$todoTasks" />
-          </x-kanban.board>
---}}
-
-@props([
-    'title' => 'Task Board',
-    'showHeader' => true,
-    'currentPage' => null
-])
-
-<div class="min-h-screen bg-gray-50" x-data="{
-    showModal: {{ $errors->any() ? 'true' : 'false' }},
-    modalType: '{{ $errors->any() ? 'create' : '' }}',
-    selectedTask: null,
-    openModal(type, task = null) {
-        this.modalType = type;
-        this.selectedTask = task;
-        this.showModal = true;
-    },
-    closeModal() {
-        this.showModal = false;
-        this.modalType = '';
-        this.selectedTask = null;
-    }
-}"
-@open-update-modal.window="openModal('update', $event.detail)"
-@open-delete-modal.window="openModal('delete', $event.detail)">
-
-    {{-- Navigation Header --}}
-    @if($showHeader)
-        <x-kanban.navigation :currentPage="$currentPage" />
-    @endif
-
-    {{-- Board Content --}}
-    <div class="p-6">
-        <div class="flex gap-6 overflow-x-auto pb-6 kanban-scroll">
-            {{ $slot }}
-        </div>
-    </div>
-
-    {{-- Enterprise Modal System --}}
-    <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {{-- Backdrop --}}
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm" 
-             x-transition:enter="ease-out duration-200" 
-             x-transition:enter-start="opacity-0" 
-             x-transition:enter-end="opacity-100"
-             @click="closeModal()"></div>
-        
-        {{-- Modal Container --}}
-        <div x-show="showModal"
-             x-transition:enter="ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
-             x-transition:leave="ease-in duration-150"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-95"
-             class="relative bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden">
-
-            {{-- CREATE MODAL --}}
-            <div x-show="modalType === 'create'">
-                {{-- Header --}}
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Create task</h2>
-                            <p class="text-sm text-gray-500">Add a new task to your project</p>
-                        </div>
-                    </div>
-                    <button @click="closeModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                
-                {{-- Content --}}
-                <form action="{{ route('tasks.store') }}" method="POST" class="flex flex-col h-full">
-                    @csrf
-                    <div class="px-6 py-4 space-y-4 flex-1 overflow-y-auto">
-                        {{-- Title Field --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">Title *</label>
-                            <input type="text" name="title" value="{{ old('title') }}"
-                                   class="w-full px-3 py-2 border {{ $errors->has('title') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors" 
-                                   placeholder="What needs to be done?"
-                                   required>
-                            @error('title')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        {{-- Description Field --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">Description *</label>
-                            <textarea name="description" rows="3"
-                                      class="w-full px-3 py-2 border {{ $errors->has('description') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none"
-                                      placeholder="Add more details..."
-                                      required>{{ old('description') }}</textarea>
-                            @error('description')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        {{-- Status & Priority Row --}}
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-700">Status *</label>
-                                <select name="status" class="w-full px-3 py-2 border {{ $errors->has('status') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500" required>
-                                    <option value="">Select status</option>
-                                    <option value="todo" {{ old('status') == 'todo' ? 'selected' : '' }}>To Do</option>
-                                    <option value="in_progress" {{ old('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                    <option value="done" {{ old('status') == 'done' ? 'selected' : '' }}>Done</option>
-                                </select>
-                                @error('status')
-                                    <p class="text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-700">Priority *</label>
-                                <select name="priority" class="w-full px-3 py-2 border {{ $errors->has('priority') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500" required>
-                                    <option value="">Select priority</option>
-                                    <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>Low</option>
-                                    <option value="medium" {{ old('priority') == 'medium' ? 'selected' : '' }}>Medium</option>
-                                    <option value="high" {{ old('priority') == 'high' ? 'selected' : '' }}>High</option>
-                                </select>
-                                @error('priority')
-                                    <p class="text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-                        
-                        {{-- Due Date --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">Due date *</label>
-                            <input type="date" name="due_date" value="{{ old('due_date') }}"
-                                   class="w-full px-3 py-2 border {{ $errors->has('due_date') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                                   required>
-                            @error('due_date')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    {{-- Actions --}}
-                    <div class="flex justify-end space-x-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
-                        <button type="button" @click="closeModal()" 
-                                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors">
-                            Create task
-                        </button>
-                    </div>
-                </form>
-            </div>
-
             {{-- UPDATE MODAL --}}
             <div x-show="modalType === 'update'">
                 {{-- Header --}}
@@ -251,6 +84,9 @@
                         </div>
                     </form>
                 </div>
+                <div x-show="!selectedTask || !selectedTask.id" class="px-6 py-4">
+                    <p class="text-red-600">Error: Task data not found</p>
+                </div>
             </div>
 
             {{-- DELETE MODAL --}}
@@ -311,8 +147,7 @@
                         </form>
                     </div>
                 </div>
+                <div x-show="!selectedTask || !selectedTask.id" class="px-6 py-4">
+                    <p class="text-red-600">Error: Task data not found</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-</div>

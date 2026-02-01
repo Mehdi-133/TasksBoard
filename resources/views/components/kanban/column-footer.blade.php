@@ -5,7 +5,7 @@
 --}}
 
 <div class="bg-white rounded-b-xl border-x border-b border-gray-200 p-3">
-    <button @click="createTaskModalOpen = true" class="w-full p-3 text-sm font-medium text-gray-600 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 transition-all duration-200 flex items-center justify-center group">
+    <button @click="openModal('create')" class="w-full p-3 text-sm font-medium text-gray-600 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 transition-all duration-200 flex items-center justify-center group">
 
         {{-- Plus Icon --}}
         <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
